@@ -40,9 +40,10 @@ export class UserService {
   }
 
   async findOne(email: string) {
-    const user = await this.UserRepository.findOneBy({email})
-    if(!user){
-      throw new Error('User not found');
+    const user = await this.UserRepository.findOneBy({ email });
+    if (!user) {
+      this.logger.warn(`User not found for email=${email}`);
+      return null;
     }
     return user;
   }
@@ -51,7 +52,7 @@ export class UserService {
     return `This action updates a user with id: ${id}`;
   }
 
-  remove(id: string) {
-    return `This action removes a user with id: ${id}`;
+  async remove(email: string) {
+    return await this.UserRepository.delete({ email: email })
   }
 }

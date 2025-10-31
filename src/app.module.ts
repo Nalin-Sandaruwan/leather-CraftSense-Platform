@@ -6,15 +6,19 @@ import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MeterialWasteModule } from './meterial_waste/meterial_waste.module';
+import { AuthModule } from './auth/auth.module';
+import { config } from 'dotenv';
 
 @Module({
   imports: [
     // load environment first
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     // then initialize TypeORM with the config factory
+    
     TypeOrmModule.forRoot(ormConfig()),
     UserModule,
     MeterialWasteModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
