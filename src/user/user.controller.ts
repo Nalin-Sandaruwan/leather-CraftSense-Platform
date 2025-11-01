@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/gards/jwt.auth.gard';
 import { User } from './entities/user.entity';
-import { UserRole } from 'src/auth/enums/roles.enum';
+import { role } from 'src/auth/enums/roles.enum';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { RolesGuard } from 'src/auth/gards/roles/roles.guard';
 
@@ -12,10 +12,10 @@ import { RolesGuard } from 'src/auth/gards/roles/roles.guard';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
+  // @Post()
+  // create(@Body() createUserDto: CreateUserDto) {
+  //   return this.userService.create(createUserDto);
+  // }
 
 
   @Get()
@@ -33,11 +33,11 @@ export class UserController {
     return this.userService.update(id, updateUserDto);
   }
 
-  @Roles(UserRole.USER)
-  @UseGuards(RolesGuard)
+  // @Roles(role.USER)
   @UseGuards(JwtAuthGuard)
-  @Delete()
-  remove(@Body('email') email: string) {
-    return this.userService.remove(email);
+  @UseGuards(RolesGuard)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.userService.remove(id);
   }
 }

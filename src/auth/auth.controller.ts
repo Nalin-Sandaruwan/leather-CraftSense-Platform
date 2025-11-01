@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+
 import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './gards/local.auth.gards';
 import { RefreshAuthGuard } from './gards/refresh/refreh.guard';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -19,9 +19,17 @@ export class AuthController {
     }
   }
 
+  @Post('signup')
+  async signup(@Body() createUserDto: CreateUserDto) {
+    const user = await this.authService.signUp(createUserDto);
+    return {
+      user
+    }
+  }
+
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
-  async refreshToken(@Req() req: { user: { id: string } }) {
+  async refreshToken(@Req() req: Request & { user: { id: string } }) {
     return this.authService.refreshToken(req.user.id);
   }
 

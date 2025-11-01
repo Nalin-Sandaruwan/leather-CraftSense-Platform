@@ -1,26 +1,30 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
-import { ROLES_KEY } from 'src/auth/decorator/roles.decorator';
-import { UserRole } from 'src/auth/enums/roles.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  
   constructor(private reflector: Reflector) {}
 
-  canActivate(
-    context: ExecutionContext
-  ): boolean { 
-
-    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(
-      ROLES_KEY,[
+  canActivate(context: ExecutionContext): boolean {
+    // get roles metadata from handler or class
+    const requiredRoles =
+      this.reflector.getAllAndOverride<string[]>('roles', [
         context.getHandler(),
-        context.getClass()
-      ]); 
-      
-    const user = context.switchToHttp().getRequest().user;
-    const hasRequiredRoles = requiredRoles.some((roles) => user.role == roles);
-    return hasRequiredRoles; 
+        context.getClass(),
+      ]);
+
+    // if no roles required allow
+    if (!requiredRoles || requiredRoles.length === 0) return true;
+
+    const req = context.switchToHttp().getRequest();
+    const user = req?.user;
+
+    // defensive: if user or user.role missing, deny
+    if (!user || typeof user.role === 'undefined' || user.role === null) {
+      return false;
+    }
+
+    // compare as strings to avoid enum mismatch
+    return requiredRoles.some((r) => String(r) === String(user.role));
   }
 }

@@ -10,6 +10,6 @@ export default():TypeOrmModuleOptions=>{
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     entities: [  User],
-    synchronize: true,
+    synchronize: false,
      }
 }
