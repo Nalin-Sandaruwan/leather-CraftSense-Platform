@@ -5,9 +5,10 @@ import ormConfig from './config/orm.config';
 import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MeterialWasteModule } from './meterial_waste/meterial_waste.module';
 import { AuthModule } from './auth/auth.module';
 import { config } from 'dotenv';
+import { MeterialsModule } from './meterials/meterials.module';
+
 
 @Module({
   imports: [
@@ -17,8 +18,9 @@ import { config } from 'dotenv';
     
     TypeOrmModule.forRoot(ormConfig()),
     UserModule,
-    MeterialWasteModule,
     AuthModule,
+    MeterialsModule,
+    
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -4,27 +4,31 @@ import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import jwtConfig from "src/config/jwt.config";
 import refreshJwtConfig from "src/config/refresh.jwt.config";
+import { ConfigService } from "@nestjs/config";
+import { AuthService } from "../auth.service";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy,'jwt') {
-     constructor(
-          @Inject(jwtConfig.KEY)
-          private jwtConfigaration: ConfigType<typeof jwtConfig>
-     ){
-          super({
-               jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-               secretOrKey: jwtConfigaration.secret as string,
-          })
-     }
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: configService.get<string>('JWT_SECRET') || process.env.JWT_SECRET,
+    });
+  }
 
-     // This method is called after token is verified
-     async validate(payload: any) {
-
-          console.log(payload)
-          // payload contains decoded JWT data (e.g., { sub: userId, email: 'user@example.com' })
-          // Return user data to attach to request.user
-          return { 
-               userId: payload.sub, 
-          };
-     }
+  async validate(payload: any) {
+    const user = await this.authService.validateJwtUser(payload.sub);
+    if (!user) return null;
+    // return plain object that includes `role` exactly as your RolesGuard expects
+    return {
+      uId: user.uId,
+      id: user.uId,            // keep both shapes if code expects id or uId
+      email: user.email,
+      role: String(user.role), // ensure role is a string that matches Roles decorator
+    };
+  }
 }

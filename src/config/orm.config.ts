@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { Meterial } from "src/meterials/entities/meterial.entity";
 import { User } from "src/user/entities/user.entity";
 
 export default():TypeOrmModuleOptions=>{
@@ -9,7 +10,7 @@ export default():TypeOrmModuleOptions=>{
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    entities: [  User],
-    synchronize: false,
+    entities: [  User, Meterial],
+    synchronize: true,
      }
 }

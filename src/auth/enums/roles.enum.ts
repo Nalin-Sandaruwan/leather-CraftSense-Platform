@@ -1,5 +1,7 @@
 export enum role {
   ADMIN = 'ADMIN',
-  USER = 'USER',
+  MANAGER = 'MANAGER',
+  EMPLOYEE = 'EMPLOYEE',
+  SUPERVISOR = 'SUPERVISOR',
   // add other roles exactly as stored in DB
 }  

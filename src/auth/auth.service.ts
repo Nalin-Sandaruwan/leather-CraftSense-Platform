@@ -42,7 +42,7 @@ export class AuthService {
     await this.UserRepository.save(user);
     const { accessToken, refreshToken } = await this.generateTokens(
       user.uId,
-      role.ADMIN,
+      role.MANAGER,
     );
     const hashedRefreshToken = await argon2.hash(refreshToken);
     await this.UserService.updateHashedRefreshToken(
@@ -78,7 +78,7 @@ export class AuthService {
     const user = await this.UserService.findOneById(userId.toString());
     const { accessToken, refreshToken } = await this.generateTokens(
       parseInt(userId),
-      role.ADMIN,
+      user.role,
     );
     const hashedRefreshToken = await argon2.hash(refreshToken);
     await this.UserService.updateHashedRefreshToken(userId, hashedRefreshToken);
@@ -93,7 +93,7 @@ export class AuthService {
     const user = await this.UserService.findOneById(user_Id.toString());
     const { accessToken, refreshToken } = await this.generateTokens(
       parseInt(user_Id),
-      role.ADMIN,
+      user.role,
     );
     const hashedRefreshToken = await argon2.hash(refreshToken);
     await this.UserService.updateHashedRefreshToken(
@@ -108,7 +108,7 @@ export class AuthService {
   }
 
   async generateTokens(userId: number, userRole: role) {
-    const payload: JwtPayload & { role: role } = {
+    const payload: JwtPayload = {
       sub: userId,
       role: userRole,
     };

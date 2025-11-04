@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -33,11 +33,11 @@ export class UserController {
     return this.userService.update(id, updateUserDto);
   }
 
-  // @Roles(role.USER)
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RolesGuard)
+  @Roles(role.MANAGER) // ensure this role matches the role in the JWT payload
+  @UseGuards(JwtAuthGuard, RolesGuard) // JwtAuthGuard runs first, then RolesGuard
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Req() req, @Param('id') id: string) {
+    console.log('req.user:', req.user); // debug: inspect decoded token / user object
     return this.userService.remove(id);
   }
 }

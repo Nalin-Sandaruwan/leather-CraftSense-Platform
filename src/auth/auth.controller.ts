@@ -13,6 +13,8 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req ){
+    console.log(req.user);
+    
     const user = await this.authService.login(req.user.id);
     return{
       user
@@ -29,7 +31,7 @@ export class AuthController {
 
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
-  async refreshToken(@Req() req: Request & { user: { id: string } }) {
+  async refreshToken(@Req() req:Request & { user: { id: string } }) {
     return this.authService.refreshToken(req.user.id);
   }
 
