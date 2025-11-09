@@ -61,6 +61,7 @@ export class AuthService {
     };
   }
 
+  //use in local strategy
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.UserService.findOne(email);
     if (!user) {
@@ -123,6 +124,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
+  //jwt starategy use that 
   async validateJwtUser(userId: number): Promise<any> {
     const user = await this.UserService.findOneById(userId.toString());
     if (!user) {

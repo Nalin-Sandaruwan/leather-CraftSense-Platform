@@ -15,10 +15,16 @@ export class MeterialsService {
     ) {}
   create(createMeterialDto: CreateMeterialDto, user:any) {
     createMeterialDto.userId = user.id;
+
+    // calculate one cost 
     const meterial = this.meterialRepository.create({
       ...createMeterialDto,
-      user: { uId: user.id } as any, // set relation so TypeORM creates proper FK
+      user: { uId: user.id } as any,
+      leatherBatch: { id: createMeterialDto.leatherBatchId } as any, // set relation so TypeORM creates proper FK
     });
+    const onCost =   createMeterialDto.full_Area / createMeterialDto.available_Area;
+    meterial.one_Cost = onCost;
+
     return this.meterialRepository.save(meterial);
   }
 
@@ -26,6 +32,7 @@ export class MeterialsService {
      const meterials = this.meterialRepository
      .createQueryBuilder('meterial')
       .leftJoinAndSelect('meterial.user', 'user')
+      .leftJoinAndSelect('meterial.leatherBatch', 'leatherBatch')
       .orderBy('meterial.created_At', sort.toUpperCase() as 'ASC' | 'DESC')
       .getMany();
 
@@ -33,14 +40,17 @@ export class MeterialsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} meterial`;
+    const meterial = this.meterialRepository.findOneById(id);
+    return meterial;
   }
 
   update(id: number, updateMeterialDto: UpdateMeterialDto) {
-    return `This action updates a #${id} meterial`; 
+    const updatedMeterial = this.meterialRepository.update(id, updateMeterialDto);
+    return updatedMeterial;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} meterial`;
+    const deletedMeterial = this.meterialRepository.delete(id);
+    return deletedMeterial;
   }
 }

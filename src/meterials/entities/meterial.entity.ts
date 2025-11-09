@@ -1,3 +1,4 @@
+import { LeatherBatch } from "src/leather_batch/entities/leather_batch.entity";
 import { User } from "src/user/entities/user.entity";
 import {
   Entity,
@@ -31,9 +32,6 @@ export class Meterial {
   @Column('double precision')
   one_Cost: number;
 
-  @Column('int')
-  quantity: number;
-
   @CreateDateColumn({ type: 'timestamp' })
   created_At: Date;
 
@@ -42,4 +40,7 @@ export class Meterial {
 
   @ManyToOne(() => User, (user) => user.meterials)
   user: User;
+
+  @ManyToOne(() => LeatherBatch, (leatherBatch) => leatherBatch.meterial)
+  leatherBatch: LeatherBatch;
 }

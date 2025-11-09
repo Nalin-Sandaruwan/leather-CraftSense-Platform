@@ -21,6 +21,11 @@ export class CreateMeterialDto {
 
   @IsNumber()
   quantity: number;
+
+  @IsNumber()
+  leatherBatchId?: number;
+
+  @IsNumber()
   // id of the user that owns this meterial (relation)
   userId?: number;
 }

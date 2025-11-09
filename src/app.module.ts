@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { config } from 'dotenv';
 import { MeterialsModule } from './meterials/meterials.module';
 import { MailModule } from './mail/mail.module';
+import { LeatherBatchModule } from './leather_batch/leather_batch.module';
 
 
 @Module({
@@ -22,6 +23,7 @@ import { MailModule } from './mail/mail.module';
     AuthModule,
     MeterialsModule,
     MailModule,
+    LeatherBatchModule,
   
 
 
