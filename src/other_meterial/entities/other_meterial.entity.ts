@@ -19,7 +19,7 @@ export class OtherMeterial {
     @Column('double precision')
     total_Cost: number;
 
-    @ManyToOne(()=> User, (user)=> user.other_Meterials, { nullable: false })
+    @ManyToOne(()=> User, (user)=> user.other_Meterials)
     user:User
 
     

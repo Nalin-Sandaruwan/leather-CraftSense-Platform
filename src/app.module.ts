@@ -11,6 +11,7 @@ import { MeterialsModule } from './meterials/meterials.module';
 import { MailModule } from './mail/mail.module';
 import { LeatherBatchModule } from './leather_batch/leather_batch.module';
 import { OtherMeterialModule } from './other_meterial/other_meterial.module';
+import { TypesOtherMeterialModule } from './types_other_meterial/types_other_meterial.module';
 
 
 @Module({
@@ -26,6 +27,7 @@ import { OtherMeterialModule } from './other_meterial/other_meterial.module';
     MailModule,
     LeatherBatchModule,
     OtherMeterialModule,
+    TypesOtherMeterialModule,
   
 
 
