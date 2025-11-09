@@ -19,11 +19,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { role } from './enums/roles.enum';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private readonly UserRepository: Repository<User>,
+    private readonly mailService: MailService,
 
     private readonly UserService: UserService,
     private jwtService: JwtService,
@@ -49,6 +51,8 @@ export class AuthService {
       user.uId.toString(),
       hashedRefreshToken,
     );
+
+    await this.mailService.sendWelcomeEmail(user.email, user.name);
 
     return {
       userId: user.uId,

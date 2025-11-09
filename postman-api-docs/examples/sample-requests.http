@@ -1,0 +1,36 @@
+GET http://localhost:3000/api/v1/users
+Authorization: Bearer {token}
+Accept: application/json
+
+###
+
+POST http://localhost:3000/api/v1/users
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "password": "password123"
+}
+
+###
+
+GET http://localhost:3000/api/v1/users/1
+Authorization: Bearer {token}
+Accept: application/json
+
+###
+
+PUT http://localhost:3000/api/v1/users/1
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "name": "John Doe Updated",
+    "email": "john.doe.updated@example.com"
+}
+
+###
+
+DELETE http://localhost:3000/api/v1/users/1
+Authorization: Bearer {token}

@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { config } from 'dotenv';
 import { MeterialsModule } from './meterials/meterials.module';
+import { MailModule } from './mail/mail.module';
 
 
 @Module({
@@ -15,14 +16,17 @@ import { MeterialsModule } from './meterials/meterials.module';
     // load environment first
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     // then initialize TypeORM with the config factory
-    
+
     TypeOrmModule.forRoot(ormConfig()),
     UserModule,
     AuthModule,
     MeterialsModule,
-    
+    MailModule,
+  
+
+
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

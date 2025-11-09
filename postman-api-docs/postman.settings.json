@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "name": "Postman API Documentation",
+  "description": "Settings for the Postman API documentation project.",
+  "workspace": {
+    "name": "Backend API Workspace",
+    "type": "team",
+    "settings": {
+      "theme": "dark",
+      "autoSave": true,
+      "requestTimeout": 30000
+    }
+  },
+  "preferences": {
+    "responseFormat": "json",
+    "defaultLanguage": "en",
+    "showConsole": true
+  }
+}

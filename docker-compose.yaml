@@ -1,47 +1,22 @@
-version: "3.8"
-
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:18
     container_name: pg_postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-neondb}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-neonpassword}
-      POSTGRES_DB: ${POSTGRES_DB:-neondb}
+    restart: unless-stopped
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-mydb}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf
-    configs:
-      - source: postgres_config
-        target: /etc/postgresql/postgresql.conf
+      - pgdata:/var/lib/postgresql   # ✅ new correct path for Postgres 18+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  postgres_data:
+  pgdata:
     driver: local
-
-configs:
-  postgres_config:
-    content: |
-      # Memory Configuration
-      shared_buffers = '128MB'
-      work_mem = '4MB'
-      maintenance_work_mem = '64MB'
-
-      # Write-Ahead Logging
-      wal_level = logical
-      max_wal_size = '1GB'
-      min_wal_size = '80MB'
-
-      # Query Planning
-      random_page_cost = 1.1
-      effective_cache_size = '512MB'
-
-      # Connection Settings
-      max_connections = 100
-      listen_addresses = '*'
-
-      # Replication
-      max_replication_slots = 5
-      max_wal_senders = 10
