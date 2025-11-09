@@ -19,7 +19,7 @@ export class MeterialsService {
     // calculate one cost 
     const meterial = this.meterialRepository.create({
       ...createMeterialDto,
-      user: { uId: user.id } as any,
+      user: { uId: user.id } ,
       leatherBatch: { id: createMeterialDto.leatherBatchId } as any, // set relation so TypeORM creates proper FK
     });
     const onCost =   createMeterialDto.full_Area / createMeterialDto.available_Area;

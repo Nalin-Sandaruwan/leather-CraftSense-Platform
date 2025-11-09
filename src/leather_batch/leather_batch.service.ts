@@ -12,16 +12,15 @@ export class LeatherBatchService {
     // @Inject(forwardRef(() => AuthService)) private readonly authService:AuthService
   ) { }
 
-  create(createLeatherBatchDto: CreateLeatherBatchDto) {
+  async create(createLeatherBatchDto: CreateLeatherBatchDto) {
 
     console.log('createLeatherBatchDto', createLeatherBatchDto);
-
     const batch = this.leatherBatchRepository.create({
       ...createLeatherBatchDto,
-      meterial: createLeatherBatchDto.Meteraial_Ids.map((material_id) => ({ id: material_id })),
+      meterial: (createLeatherBatchDto.Meteraial_Ids || []).map((material_id) => ({ id: material_id })),
     });
 
-    const savedBatch = this.leatherBatchRepository.save(batch);
+    const savedBatch = await this.leatherBatchRepository.save(batch);
     return savedBatch;
     // return 'This action adds a new leatherBatch';
   }
@@ -34,8 +33,6 @@ export class LeatherBatchService {
       .getMany();
   }
 
-  
-
   async findOne(id: number) {
     const leatherBatch = await this.leatherBatchRepository.createQueryBuilder('leatherBatch')
       .leftJoinAndSelect('leatherBatch.meterial', 'meterial')
@@ -46,7 +43,6 @@ export class LeatherBatchService {
 
   }
 
-
     // helper: get only meterial ids for a batch
   async findOneMeterialIds(id: number) {
     const leatherBatch = await this.findOne(id);
@@ -54,11 +50,43 @@ export class LeatherBatchService {
     return leatherBatch.meterial?.map(m => m.id) ?? [];
   }
 
-  update(id: number, updateLeatherBatchDto: UpdateLeatherBatchDto) {
-    return `This action updates a #${id} leatherBatch`;
+  async update(id: number, updateLeatherBatchDto: UpdateLeatherBatchDto) {
+    const { Meteraial_Ids, ...rest } = updateLeatherBatchDto ;
+
+    // update scalar columns (if any)
+    if (Object.keys(rest).length) {
+      await this.leatherBatchRepository.update(id, rest);
+    }
+
+    // if relation ids provided, diff current vs incoming and remove/add as needed
+    if (Array.isArray(Meteraial_Ids)) {
+      const currentIds = await this.findOneMeterialIds(id);
+
+      const toAdd = Meteraial_Ids.filter((i: number) => !currentIds.includes(i));
+      const toRemove = currentIds.filter((i: number) => !Meteraial_Ids.includes(i));
+
+      // remove old relations
+      if (toRemove.length) {
+        await this.leatherBatchRepository.createQueryBuilder()
+          .relation(LeatherBatch, 'meterial')
+          .of(id)
+          .remove(toRemove);
+      }
+
+      // add new relations
+      if (toAdd.length) {
+        await this.leatherBatchRepository.createQueryBuilder()
+          .relation(LeatherBatch, 'meterial')
+          .of(id)
+          .add(toAdd);
+      }
+    }
+
+    // return updated entity with relations
+    return this.findOne(id);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} leatherBatch`;
+    return this.leatherBatchRepository.delete(id);
   }
 }

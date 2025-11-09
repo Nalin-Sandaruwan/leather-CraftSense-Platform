@@ -36,4 +36,5 @@ export class LeatherBatchController {
   remove(@Param('id') id: string) {
     return this.leatherBatchService.remove(+id);
   }
+  
 }
