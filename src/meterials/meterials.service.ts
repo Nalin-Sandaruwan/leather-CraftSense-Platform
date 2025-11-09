@@ -14,7 +14,7 @@ export class MeterialsService {
       // @Inject(forwardRef(() => AuthService)) private readonly authService:AuthService
     ) {}
   create(createMeterialDto: CreateMeterialDto, user:any) {
-    createMeterialDto.userId = user.id;
+    // createMeterialDto.userId = user.id;
 
     // calculate one cost 
     const meterial = this.meterialRepository.create({

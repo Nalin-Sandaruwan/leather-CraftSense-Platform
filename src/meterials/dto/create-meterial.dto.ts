@@ -20,9 +20,6 @@ export class CreateMeterialDto {
   one_Cost: number;
 
   @IsNumber()
-  quantity: number;
-
-  @IsNumber()
   leatherBatchId?: number;
 
   @IsNumber()

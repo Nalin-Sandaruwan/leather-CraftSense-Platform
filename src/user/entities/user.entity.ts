@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { role } from 'src/auth/enums/roles.enum';
 
 import { Meterial } from 'src/meterials/entities/meterial.entity';
+import { OtherMeterial } from 'src/other_meterial/entities/other_meterial.entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 
@@ -34,6 +35,9 @@ export class User {
   // inverse side must point to the Meterial property that stores the relation (user)
   @OneToMany(() => Meterial, (meterial) => meterial.user)
   meterials: Meterial[];
+
+  @OneToMany(()=> OtherMeterial, (otherMeterial)=> otherMeterial.user )
+  other_Meterials:OtherMeterial[];
 
   @BeforeInsert()
   async hashPassword(){
