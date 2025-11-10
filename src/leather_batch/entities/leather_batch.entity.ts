@@ -1,4 +1,5 @@
 import { Meterial } from 'src/meterials/entities/meterial.entity';
+import { Product } from 'src/plan/product/entities/product.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 
 @Entity('leather_batch')
@@ -24,6 +25,8 @@ export class LeatherBatch {
     @Column({ type: 'timestamp', nullable: true })
     Updated_At?: Date;
 
+    @OneToMany(() => Product, product => product.leather_batch)
+    products: Product[];
     // foreign key column (optional but useful)
     // @Column({ nullable: true })
     // Meteraial_Id?: number;

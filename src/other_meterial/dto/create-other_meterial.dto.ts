@@ -4,6 +4,9 @@ export class CreateOtherMeterialDto {
     @IsString()
     other_Meterial_Name: string;
 
+    @IsNumber()
+    other_Meterial_TypeId: number;
+
     @IsBoolean()
     quantity: number;
 

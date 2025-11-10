@@ -12,7 +12,7 @@ export class OtherMeterialController {
   constructor(private readonly otherMeterialService: OtherMeterialService) {}
 
   @Roles(role.MANAGER)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   create(@Request() req, @Body() createOtherMeterialDto: CreateOtherMeterialDto) {
     return this.otherMeterialService.create(createOtherMeterialDto, req.user);

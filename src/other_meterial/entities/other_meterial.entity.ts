@@ -1,5 +1,6 @@
+import { TypesOtherMeterial } from "src/types_other_meterial/entities/types_other_meterial.entity";
 import { User } from "src/user/entities/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class OtherMeterial {
@@ -22,6 +23,7 @@ export class OtherMeterial {
     @ManyToOne(()=> User, (user)=> user.other_Meterials)
     user:User
 
-    
+    @ManyToOne(()=> TypesOtherMeterial, typeOtherMeterial => typeOtherMeterial.otherMeterials)
+    typeOtherMeterial: TypesOtherMeterial;
 
 }

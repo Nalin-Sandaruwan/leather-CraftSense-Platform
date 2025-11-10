@@ -8,6 +8,6 @@ import { LeatherBatch } from './entities/leather_batch.entity';
   imports: [TypeOrmModule.forFeature([LeatherBatch])],
   controllers: [LeatherBatchController],
   providers: [LeatherBatchService],
-  exports:[LeatherBatchService]
+  exports:[LeatherBatchService, TypeOrmModule,]
 })
 export class LeatherBatchModule {}

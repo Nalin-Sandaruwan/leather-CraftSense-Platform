@@ -17,7 +17,8 @@ export class OtherMeterialService {
     createOtherMeterialDto.unit_cost = createOtherMeterialDto.total_Cost/createOtherMeterialDto.quantity
     const otherMeterial = this.otherMeterialRepository.create({ 
       ...createOtherMeterialDto, 
-      user: { uId: user.id } as any
+      user: { uId: user.id },
+      typeOtherMeterial: { type_id: createOtherMeterialDto.other_Meterial_TypeId }
     });
     const savedOtherMeterial = this.otherMeterialRepository.save(otherMeterial);
     return savedOtherMeterial;
@@ -25,14 +26,25 @@ export class OtherMeterialService {
   }
 
   findAll() {
-    return `This action returns all otherMeterial`;
+    const otherMeterials = this.otherMeterialRepository.createQueryBuilder('otherMeterial')
+    .leftJoinAndSelect('otherMeterial.typeOtherMeterial', 'typeOtherMeterial')
+    .leftJoinAndSelect('otherMeterial.user', 'user')
+    .getMany()
+    return otherMeterials;
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} otherMeterial`;
+    const otherMeterials = this.otherMeterialRepository.createQueryBuilder('otherMeterial')
+    .leftJoinAndSelect('otherMeterial.typeOtherMeterial', 'typeOtherMeterial')
+    .leftJoinAndSelect('otherMeterial.user', 'user')
+    .where('otherMeterial.other_Meterial_Id = :id', { id })
+    .getOne()
+    return otherMeterials;
   }
 
   update(id: number, updateOtherMeterialDto: UpdateOtherMeterialDto) {
+
+    
     return `This action updates a #${id} otherMeterial`;
   }
 

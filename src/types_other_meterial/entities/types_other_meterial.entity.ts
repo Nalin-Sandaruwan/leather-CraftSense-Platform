@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { OtherMeterial } from "src/other_meterial/entities/other_meterial.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class TypesOtherMeterial {
@@ -10,4 +11,7 @@ export class TypesOtherMeterial {
 
     @Column({ nullable: false })
     description: string;
+
+    @OneToMany(()=> OtherMeterial, otherMeterial => otherMeterial.typeOtherMeterial)
+    otherMeterials: OtherMeterial[];
 }
