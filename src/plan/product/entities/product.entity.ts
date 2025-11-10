@@ -1,5 +1,5 @@
 import { LeatherBatch } from "src/leather_batch/entities/leather_batch.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, JoinTable, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('products')
 export class Product {
@@ -18,26 +18,23 @@ export class Product {
     @Column()
     area: number;
 
-    @Column('double precision')
+    @Column('double precision',{ nullable: true })
     meterialCost: number;
 
-    @Column('double precision')
+    @Column('double precision',{ nullable: true })
     otherMeterialCost: number;
 
-    @Column('double precision')
+    @Column('double precision',{ nullable: true })
     laborCost: number;
 
-    @Column('double precision')
+    @Column('double precision', { nullable: true })
     totalCost: number;
 
-    
-    //other meterail cost
-    //labor cost
-    //total cost
-    //
+    // changed: use ManyToMany and plural property name
+    @ManyToMany(() => LeatherBatch, leatherBatch => leatherBatch.products)
+    @JoinTable()
+    leatherBatches: LeatherBatch[];
 
-    @ManyToOne(() => LeatherBatch, leatherBatch => leatherBatch.products)
-    leather_batch:LeatherBatch[]
     // recomended meterials, etc. ----- relation
     // recomended Other meterrials ----- relation
 

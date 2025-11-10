@@ -25,7 +25,7 @@ export class LeatherBatch {
     @Column({ type: 'timestamp', nullable: true })
     Updated_At?: Date;
 
-    @OneToMany(() => Product, product => product.leather_batch)
+    @OneToMany(() => Product, product => product.leatherBatches)
     products: Product[];
     // foreign key column (optional but useful)
     // @Column({ nullable: true })

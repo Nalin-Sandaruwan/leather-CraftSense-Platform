@@ -1,24 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, In } from 'typeorm';
+import { Product } from './entities/product.entity';
+import { LeatherBatch } from 'src/leather_batch/entities/leather_batch.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProductService {
-
   constructor(
-    @InjectRepository(Product) private readonly productRepository:Repository<Product>
-  ){}
+    @InjectRepository(Product) private readonly productRepository: Repository<Product>,
+    @InjectRepository(LeatherBatch) private readonly leatherBatchRepository: Repository<LeatherBatch>,
+  ) {}
 
-  create(createProductDto: CreateProductDto) {
-    const createdProduct = this.productRepository.create({
-      ...createProductDto,
-      leather_batch:(createProductDto.leatherBatch).map((batchId)=>({id:batchId}))
-    })
+  async create(createProductDto: CreateProductDto) {
+    if (!createProductDto) throw new BadRequestException('Missing body');
 
-    return createdProduct
+    const lbIds = Array.isArray(createProductDto.leatherBatch) ? createProductDto.leatherBatch : [];
+    const product = this.productRepository.create({ ...createProductDto });
+
+    if (lbIds.length) {
+      const batches = await this.leatherBatchRepository.find({ where: { id: In(lbIds) } });
+      if (batches.length !== lbIds.length) {
+        throw new BadRequestException('One or more leatherBatch ids not found');
+      }
+      product.leatherBatches = batches;
+    }
+
+    return this.productRepository.save(product);
   }
 
   findAll() {
@@ -26,7 +35,10 @@ export class ProductService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} product`;
+    return this.productRepository.createQueryBuilder('product')
+      .leftJoinAndSelect('product.leatherBatches','leatherBatch')
+      .where('product.id = :id',{id})
+      .getOne()
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
