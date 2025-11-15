@@ -30,4 +30,8 @@ export class CreateProductDto {
     @IsArray()
     leatherBatch:number[]
 
+    @IsNumber({}, { each: true })
+    @IsArray()
+    otherLetherMeterial:number[]
+
 }

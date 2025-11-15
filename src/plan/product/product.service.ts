@@ -17,7 +17,8 @@ export class ProductService {
     if (!createProductDto) throw new BadRequestException('Missing body');
 
     const lbIds = Array.isArray(createProductDto.leatherBatch) ? createProductDto.leatherBatch : [];
-    const product = this.productRepository.create({ ...createProductDto });
+    const product = this.productRepository.create({ ...createProductDto, 
+      otherLetherMeterial:(createProductDto.otherLetherMeterial).map(id=>({other_Meterial_Id:id})) });
 
     if (lbIds.length) {
       const batches = await this.leatherBatchRepository.find({ where: { id: In(lbIds) } });
@@ -31,7 +32,10 @@ export class ProductService {
   }
 
   findAll() {
-    return `This action returns all product`;
+    return this.productRepository.createQueryBuilder('product')
+      .leftJoinAndSelect('product.leatherBatches','leatherBatch')
+      .leftJoinAndSelect('product.otherLetherMeterial','otherMeterial')
+      .getMany();
   }
 
   findOne(id: number) {

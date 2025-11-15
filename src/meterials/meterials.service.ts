@@ -48,10 +48,11 @@ export class MeterialsService {
     return meterials;
   }
 
-  findOne(id: number) {
-    const meterial = this.meterialRepository.createQueryBuilder('meterial')
+  async findOne(id: number) {
+    const meterial = await this.meterialRepository.createQueryBuilder('meterial')
     .leftJoinAndSelect('meterial.user', 'user')
-    .leftJoinAndSelect('meterial.leatherBatch','letherBatch')
+    .leftJoinAndSelect('meterial.leatherBatch','leatherBatch')
+    .where('meterial.id = :id', { id })
     .getOne()
     return meterial;
   }

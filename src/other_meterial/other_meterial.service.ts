@@ -25,12 +25,14 @@ export class OtherMeterialService {
     //
   }
 
-  findAll() {
-    const otherMeterials = this.otherMeterialRepository.createQueryBuilder('otherMeterial')
+  async findAll() {
+    const otherMeterials = await this.otherMeterialRepository.createQueryBuilder('otherMeterial')
     .leftJoinAndSelect('otherMeterial.typeOtherMeterial', 'typeOtherMeterial')
     .leftJoinAndSelect('otherMeterial.user', 'user')
     .getMany()
-    return otherMeterials;
+    return {
+      data : otherMeterials
+    };
   }
 
   findOne(id: number) {
@@ -44,8 +46,12 @@ export class OtherMeterialService {
 
   update(id: number, updateOtherMeterialDto: UpdateOtherMeterialDto) {
 
-    
-    return `This action updates a #${id} otherMeterial`;
+    const { other_Meterial_TypeId, ...rest } = updateOtherMeterialDto;
+    const updateData = this.otherMeterialRepository.update(id, { 
+      ...rest,
+      ...(other_Meterial_TypeId && { typeOtherMeterial: { type_id: other_Meterial_TypeId } })
+    });
+    return updateData;
   }
 
   remove(id: number) {

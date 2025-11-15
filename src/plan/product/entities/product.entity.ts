@@ -1,4 +1,5 @@
 import { LeatherBatch } from "src/leather_batch/entities/leather_batch.entity";
+import { OtherMeterial } from "src/other_meterial/entities/other_meterial.entity";
 import { Column, Entity, ManyToMany, JoinTable, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('products')
@@ -34,6 +35,10 @@ export class Product {
     @ManyToMany(() => LeatherBatch, leatherBatch => leatherBatch.products)
     @JoinTable()
     leatherBatches: LeatherBatch[];
+
+    @ManyToMany(()=>OtherMeterial, otherMeterial=> otherMeterial.products)
+    @JoinTable()
+    otherLetherMeterial:OtherMeterial[]
 
     // recomended meterials, etc. ----- relation
     // recomended Other meterrials ----- relation

@@ -13,6 +13,7 @@ import { LeatherBatchModule } from './leather_batch/leather_batch.module';
 import { OtherMeterialModule } from './other_meterial/other_meterial.module';
 import { TypesOtherMeterialModule } from './types_other_meterial/types_other_meterial.module';
 import { ProductModule } from './plan/product/product.module';
+import { CreatedProductsModule } from './created.products/created.products.module';
 
 
 @Module({
@@ -30,6 +31,7 @@ import { ProductModule } from './plan/product/product.module';
     OtherMeterialModule,
     TypesOtherMeterialModule,
     ProductModule,
+    CreatedProductsModule,
   
 
 
