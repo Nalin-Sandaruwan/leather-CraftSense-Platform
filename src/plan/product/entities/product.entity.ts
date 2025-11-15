@@ -1,6 +1,7 @@
+import { CreatedProduct } from "src/created.products/entities/created.product.entity";
 import { LeatherBatch } from "src/leather_batch/entities/leather_batch.entity";
 import { OtherMeterial } from "src/other_meterial/entities/other_meterial.entity";
-import { Column, Entity, ManyToMany, JoinTable, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, JoinTable, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 
 @Entity('products')
 export class Product {
@@ -42,6 +43,7 @@ export class Product {
 
     // recomended meterials, etc. ----- relation
     // recomended Other meterrials ----- relation
-
+    @OneToMany(() => CreatedProduct, (createdProduct) => createdProduct.product_Plan)
+    createdProducts: CreatedProduct[]
 
 }

@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { CreatedProduct } from "src/created.products/entities/created.product.entity";
 import { LeatherBatch } from "src/leather_batch/entities/leather_batch.entity";
 import { Meterial } from "src/meterials/entities/meterial.entity";
 import { OtherMeterial } from "src/other_meterial/entities/other_meterial.entity";
@@ -15,7 +16,7 @@ export default():TypeOrmModuleOptions=>{
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     autoLoadEntities: true,
-    entities: [  User, Meterial,LeatherBatch, OtherMeterial, TypesOtherMeterial, Product],
+    entities: [  User, Meterial,LeatherBatch, OtherMeterial, TypesOtherMeterial, Product, CreatedProduct],
     synchronize: true,
      }
 }

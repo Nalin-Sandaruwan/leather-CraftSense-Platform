@@ -70,12 +70,30 @@ export class MeterialsService {
       ...(leatherBatchId ? { leatherBatch: { id: leatherBatchId } } : {}),
     });
 
+  
     // return updatedMeterial
     // return this.meterialRepository.createQueryBuilder('meterial')
     //   .leftJoinAndSelect('meterial.user', 'user')
     //   .leftJoinAndSelect('meterial.leatherBatch', 'leatherBatch')
     //   .where('meterial.id = :id', { id })
     //   .getOne();
+  }
+
+
+  //that part calling in the created products service
+  async updateMeterialsData(id: number, availableArea: number) {
+    const meterial = await this.meterialRepository.findOneBy({ id });
+    if (!meterial) throw new NotFoundException(`Meterial with id ${id} not found`); 
+
+    if (meterial.available_Area <= 0) {
+      throw new NotFoundException(`Meterial with id ${id} has no available area left`);
+    }
+
+    const foundedMeterial = await this.meterialRepository.update(meterial.id, {
+      available_Area: availableArea, // Example: update available_Area to 100
+    });
+
+    return foundedMeterial;
   }
 
   remove(id: number) {

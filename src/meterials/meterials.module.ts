@@ -13,6 +13,7 @@ import { LeatherBatchModule } from 'src/leather_batch/leather_batch.module';
   ],
   controllers: [MeterialsController],
   providers: [MeterialsService],
+  exports:[MeterialsService],
  
 })
 export class MeterialsModule {}
