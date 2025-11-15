@@ -1,4 +1,5 @@
 import { IsArray, IsNumber, IsOptional, IsString } from "class-validator";
+import { OtherMeterialDto } from "./otherMeterial.dto";
 
 export class CreateProductDto {
 
@@ -28,10 +29,14 @@ export class CreateProductDto {
 
     @IsNumber({}, { each: true })
     @IsArray()
+    meterials?:number
+
+    @IsNumber({}, { each: true })
+    @IsArray()
     leatherBatch:number[]
 
     @IsNumber({}, { each: true })
     @IsArray()
-    otherLetherMeterial:number[]
+    otherLetherMeterial:OtherMeterialDto[]
 
 }

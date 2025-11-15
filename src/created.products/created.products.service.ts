@@ -16,21 +16,14 @@ export class CreatedProductsService {
   constructor(
     @InjectRepository(CreatedProduct)
     private readonly createdProductRepository: Repository<CreatedProduct>,
-
     @InjectRepository(Product)
     private readonly productPlanRepository: Repository<Product>,
-
-
     @InjectRepository(LeatherBatch)
     private readonly leatherBatchRepository: Repository<LeatherBatch>,
-
-
     @InjectRepository(OtherMeterial)
     private readonly otherMeterialRepository: Repository<OtherMeterial>,
-
     @InjectRepository(Meterial)
     private readonly meterialRepository: Repository<Meterial>,
-
     private readonly meterialsService: MeterialsService,
   ) {}
 
@@ -42,7 +35,7 @@ export class CreatedProductsService {
      .where('products.id = :id',{id:createCreatedProductDto.product_PlanId})
      .getOne();
      log('productPlan',productPlan);
-
+    //  leather batch getting
      const leatherBatches = productPlan?.leatherBatches;
 
     //  meterial getting
@@ -58,31 +51,27 @@ export class CreatedProductsService {
      const totalArea = (productPlan?.area ?? 0) * createCreatedProductDto.count;
      const curretArea = ( meterials?.available_Area ?? 0) - totalArea;
      log('totalArea',totalArea);
-      const totalCost = (productPlan?.totalCost ?? 0) * (productPlan?.totalCost??0);
+      const totalCost = (productPlan?.totalCost ?? 0) * createCreatedProductDto.count;
       log('totalCost',totalCost);
 
     //update meterialas available area
       const updateMeterial = await this.meterialsService.updateMeterialsData((meterials?.id ?? 0), curretArea);
       console.log(updateMeterial);
 
+
+
      // get other meterials
-     const other_Meterial_Ids = createCreatedProductDto.other_Meterial_TypeId;
+    //  const other_Meterial_Ids = createCreatedProductDto.other_Meterial_TypeId;
 
-     other_Meterial_Ids?.map(async (id)=>{
-     const otherMeterial = await this.otherMeterialRepository.createQueryBuilder('otherMeterial')
-    .leftJoinAndSelect('otherMeterial.typeOtherMeterial', 'typeOtherMeterial')
-    .leftJoinAndSelect('otherMeterial.user', 'user')
-    .where('otherMeterial.other_Meterial_Id = :id', { id })
-    .getOne();
-
-    const totalOtherMeterialCost = 
-    console.log(otherMeterial);
-
-
-     })
-     
-    
-
+    // **use other meterials to calculate cost
+    // get product plan 
+    // get product plan one product cost * createted product count
+    // get other meterial quentity
+    // updated quentity = other meterial quentity* count
+    //check the avialability of other meterial quentity
+    // using the outhe meterial service and updating the quentity 
+     // calculate total cost = one product cost * count
+     // total save
 
       
 
@@ -90,7 +79,7 @@ export class CreatedProductsService {
        const createdProduct = await this.createdProductRepository.create({
       ...createCreatedProductDto,
       product_Plan: { id: createCreatedProductDto.product_PlanId },
-      total_cost: totalCost,
+      total_cost: totalCost 
      });
     return this.createdProductRepository.save(createdProduct);
   }
