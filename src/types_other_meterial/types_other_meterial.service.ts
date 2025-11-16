@@ -19,18 +19,23 @@ export class TypesOtherMeterialService {
   }
 
   findAll() {
-    return `This action returns all typesOtherMeterial`;
+    return this.typesOtherMeterialRepository.createQueryBuilder('typesOtherMeterial')
+    .leftJoinAndSelect('typesOtherMeterial.user','user')
+    .getMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} typesOtherMeterial`;
+    return this.typesOtherMeterialRepository.createQueryBuilder('typesOtherMeterial')
+    .leftJoinAndSelect('typesOtherMeterial.user','user')
+    .where('typesOtherMeterial.id = :id',{id})
+    .getOne();
   }
 
   update(id: number, updateTypesOtherMeterialDto: UpdateTypesOtherMeterialDto) {
-    return `This action updates a #${id} typesOtherMeterial`;
+    return this.typesOtherMeterialRepository.update(id, updateTypesOtherMeterialDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} typesOtherMeterial`;
+    return this.typesOtherMeterialRepository.delete(id);
   }
 }

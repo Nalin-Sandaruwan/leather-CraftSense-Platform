@@ -85,18 +85,27 @@ export class CreatedProductsService {
   }
 
   findAll() {
-    return `This action returns all createdProducts`;
+    const allCreatedProducts = this.createdProductRepository.createQueryBuilder('createdProduct')
+    .leftJoinAndSelect('createdProduct.product_Plan','productPlan')
+    .getMany();
+    return allCreatedProducts;
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} createdProduct`;
+    const singleCreatedProduct = this.createdProductRepository.createQueryBuilder('createdProduct')
+    .leftJoinAndSelect('createdProduct.product_Plan','productPlan')
+    .where('createdProduct.id = :id',{id:id})
+    .getOne();
+    return singleCreatedProduct;
   }
 
   update(id: number, updateCreatedProductDto: UpdateCreatedProductDto) {
-    return `This action updates a #${id} createdProduct`;
+    const updatedCreatedProduct = this.createdProductRepository.update( id,updateCreatedProductDto) ;
+    return updatedCreatedProduct;
+    
   }
 
   remove(id: number) {
-    return `This action removes a #${id} createdProduct`;
+    return this.createdProductRepository.delete(id);
   }
 }
