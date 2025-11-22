@@ -6,6 +6,7 @@ import jwtConfig from "src/config/jwt.config";
 import refreshJwtConfig from "src/config/refresh.jwt.config";
 import { ConfigService } from "@nestjs/config";
 import { AuthService } from "../auth.service";
+import { Request } from "express";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -14,9 +15,18 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private readonly configService: ConfigService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) => {
+          let token = null;
+          if (req && req.cookies) {
+            token = req.cookies['access_token'];
+          }
+          return token;
+        },
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       secretOrKey: configService.get<string>('JWT_SECRET') || process.env.JWT_SECRET,
+      ignoreExpiration: false,
     });
   }
 

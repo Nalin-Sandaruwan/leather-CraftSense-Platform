@@ -14,17 +14,25 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh-Jw
     private readonly authService: AuthService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // adapt if you use cookie
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) => {
+          let token = null;
+          if (req && req.cookies) {
+            token = req.cookies['refresh_token'];
+          }
+          return token;
+        },
+      ]),
       secretOrKey: config.secret as string,
       ignoreExpiration: false,
       passReqToCallback: true,
     });
   }
 
-  async validate(req:Request, payload: any) {
-    const refreshToken = req.get('authorization')?.replace("Bearer", "").trim();
+  async validate(req: Request, payload: any) {
+    const refreshToken = req.cookies?.['refresh_token'];
     if (!refreshToken) {
-      throw new UnauthorizedException('Refresh token not found');
+      throw new UnauthorizedException('Refresh token not found in cookies');
     }
 
     const userIdNum = Number(payload.sub);
@@ -32,8 +40,8 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh-Jw
       throw new UnauthorizedException('Invalid token payload');
     }
 
-    // const user = await this.authService.validateJwtUser(payload.sub);
-    // if (!user) throw new UnauthorizedException();
+    const user = await this.authService.validateJwtUser(payload.sub);
+    if (!user) throw new UnauthorizedException();
     return this.authService.validateRefreshToken(userIdNum, refreshToken);
   }
 }

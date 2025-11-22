@@ -20,7 +20,7 @@ import { RolesGuard } from 'src/auth/gards/roles/roles.guard';
 
 @Controller('meterials')
 export class MeterialsController {
-  constructor(private readonly meterialsService: MeterialsService) {}
+  constructor(private readonly meterialsService: MeterialsService) { }
 
   @Roles(role.MANAGER)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -28,12 +28,14 @@ export class MeterialsController {
   create(@Req() req, @Body() createMeterialDto: CreateMeterialDto) {
     return this.meterialsService.create(createMeterialDto, req.user);
     console.log(req.user);
-    
+
   }
 
+  @Roles(role.MANAGER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   findAll(@Query('sort') sort: 'asc' | 'desc' = 'asc') {
-    return this.meterialsService.findAll( sort );
+    return this.meterialsService.findAll(sort);
   }
 
   @Get(':id')
