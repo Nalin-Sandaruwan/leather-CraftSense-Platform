@@ -18,5 +18,11 @@ export default():TypeOrmModuleOptions=>{
     autoLoadEntities: true,
     entities: [  User, Meterial,LeatherBatch, OtherMeterial, TypesOtherMeterial, Product, CreatedProduct],
     synchronize: true,
+    ssl: true,
+    extra: {
+      ssl: {
+        rejectUnauthorized: false
+      }
+    }
      }
 }
