@@ -15,6 +15,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Verify Docker Hub Login
+        run: docker info
     
       - name: Set short SHA
         id: vars
@@ -26,5 +29,5 @@ jobs:
           context: ./
           push: true
           tags: |
-                kalharacodes/docker-automation:${{ env.SHORT_SHA }}
-                kalharacodes/docker-automation:latest
+                ${{ secrets.DOCKERHUB_USERNAME }}/pgbackend:${{ env.SHORT_SHA }}
+                ${{ secrets.DOCKERHUB_USERNAME }}/pgbackend:latest
