@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  ECR_REPOSITORY: nestjsbackrepo # Your ECR repository name
+  ECR_REPOSITORY: pgnestbackrepo # Your ECR repository name
   ECS_SERVICE: nestjs-task-service
   ECS_CLUSTER: nestjscluster
   ECS_TASK_DEFINITION: nestjs-task # Path to your task def
