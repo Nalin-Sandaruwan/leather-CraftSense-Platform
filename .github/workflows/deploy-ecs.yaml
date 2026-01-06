@@ -38,11 +38,16 @@ jobs:
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
 
-      - name: Prepare task definition (replace image placeholder)
+      - name: Prepare task definition (replace image and remove invalid keys)
         run: |
           mkdir -p ecs
-          # assume ecs/taskdef.template.json exists in repo with IMAGE_URI_PLACEHOLDER
-          sed -e "s|IMAGE_URI_PLACEHOLDER|${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}|g" ecs/taskdef.template.json > ecs/taskdef.json
+          IMAGE_URI="${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
+          if ! command -v jq >/dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
+          cat ecs/taskdef.template.json \
+            | jq --arg IMAGE "$IMAGE_URI" '
+                del(.compatibilities, .registeredAt, .registeredBy, .requiresAttributes, .revision, .status, .taskDefinitionArn)
+                | .containerDefinitions |= (map(.image = $IMAGE))
+              ' > ecs/taskdef.json
 
       - name: Register task definition
         id: register
