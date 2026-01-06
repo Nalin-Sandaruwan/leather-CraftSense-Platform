@@ -38,100 +38,11 @@ jobs:
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
 
-        - name: Prepare task definition (create if missing)
+      - name: Prepare task definition (replace image placeholder)
         run: |
           mkdir -p ecs
-          IMAGE_URI="${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
-          if [ -f ecs/taskdef.template.json ]; then
-          sed -e "s|IMAGE_URI_PLACEHOLDER|${IMAGE_URI}|g" ecs/taskdef.template.json > ecs/taskdef.json
-          else
-          cat > ecs/taskdef.json <<'TASKDEF'
-    {
-      "compatibilities": [
-        "EC2",
-        "MANAGED_INSTANCES",
-        "FARGATE"
-      ],
-      "containerDefinitions": [
-        {
-          "cpu": 0,
-          "environment": [],
-          "environmentFiles": [],
-          "essential": true,
-          "image": "IMAGE_URI_PLACEHOLDER",
-          "logConfiguration": {
-            "logDriver": "awslogs",
-            "options": {
-              "awslogs-group": "/ecs/nestback-td",
-              "awslogs-create-group": "true",
-              "awslogs-region": "us-east-1",
-              "awslogs-stream-prefix": "ecs"
-            },
-            "secretOptions": []
-          },
-          "mountPoints": [],
-          "name": "pgback-container",
-          "portMappings": [
-            {
-              "appProtocol": "http",
-              "containerPort": 80,
-              "hostPort": 80,
-              "name": "80",
-              "protocol": "tcp"
-            },
-            {
-              "appProtocol": "http",
-              "containerPort": 3000,
-              "hostPort": 3000,
-              "name": "3000",
-              "protocol": "tcp"
-            }
-          ],
-          "systemControls": [],
-          "ulimits": [],
-          "volumesFrom": []
-        }
-      ],
-      "cpu": "1024",
-      "enableFaultInjection": false,
-      "executionRoleArn": "arn:aws:iam::206536291958:role/ecsTaskExecutionRole",
-      "family": "nestback-td",
-      "memory": "3072",
-      "networkMode": "awsvpc",
-      "placementConstraints": [],
-      "requiresAttributes": [
-        {
-          "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-        },
-        {
-          "name": "ecs.capability.execution-role-awslogs"
-        },
-        {
-          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-        },
-        {
-          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-        },
-        {
-          "name": "ecs.capability.task-eni"
-        },
-        {
-          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
-        }
-      ],
-      "requiresCompatibilities": [
-        "FARGATE"
-      ],
-      "runtimePlatform": {
-        "cpuArchitecture": "X86_64",
-        "operatingSystemFamily": "LINUX"
-      },
-      "volumes": [],
-      "tags": []
-    }
-    TASKDEF
-          sed -i "s|IMAGE_URI_PLACEHOLDER|${IMAGE_URI}|g" ecs/taskdef.json
-          fi
+          # assume ecs/taskdef.template.json exists in repo with IMAGE_URI_PLACEHOLDER
+          sed -e "s|IMAGE_URI_PLACEHOLDER|${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}|g" ecs/taskdef.template.json > ecs/taskdef.json
 
       - name: Register task definition
         id: register
