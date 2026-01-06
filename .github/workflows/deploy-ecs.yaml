@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env: 
+    env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       ECR_REPOSITORY: nalinsithara/nest
       ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
