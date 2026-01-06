@@ -45,7 +45,7 @@ jobs:
           if ! command -v jq >/dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
           cat ecs/taskdef.template.json \
             | jq --arg IMAGE "$IMAGE_URI" '
-                del(.compatibilities, .registeredAt, .registeredBy, .requiresAttributes, .revision, .status, .taskDefinitionArn)
+                  del(.compatibilities, .registeredAt, .registeredBy, .requiresAttributes, .revision, .status, .taskDefinitionArn, .tags)
                 | .containerDefinitions |= (map(.image = $IMAGE))
               ' > ecs/taskdef.json
 
